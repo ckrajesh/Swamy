@@ -1,0 +1,118 @@
+{% load static %}
+<style media="screen">
+  .logo1 {
+    padding-right: 25px
+  }
+
+  @media screen and (min-device-width: 300px) and (max-device-width: 618px) {
+    .mylogo {
+      width: 140%
+    }
+  }
+</style>
+
+
+
+<style media="screen">
+
+  @media screen and (min-device-width: 619px) and (max-device-width: 1400px) {
+    .mylogo {
+      width: 100%
+
+    }
+  }
+</style>
+
+<!-- *************** -->
+
+<header class="section-header">
+  <section class="header-main border-bottom">
+    <div class="container">
+      <div class="row align-items-center topnav">
+        <div class="col-lg-3 col-4 col-sm-4">
+          <a href="{% url 'home' %}" class="brand-wrap">
+            <img class="logo1 mylogo"  src="{% static './images/newswamykb.png' %}">
+          </a> <!-- brand-wrap.// -->
+        </div>
+        <!-- <div class="container"> -->
+        <div class="col-lg-6 col-sm-8 col-sm-6 col-8 topnav" style="align:center">
+          <form action="{% url 'search' %}" class="search" method='GET'>
+            <div class="input-group w-100">
+              <input type="text" class="form-control mr-sm-2" style="width:40%;" placeholder="Search" name="keyword" required>
+              <div class="input-group-append ">
+                <button class="btn btn-primary my-2 my-sm-0" type="submit"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </form> <!-- search-wrap .end// -->
+        </div> <!-- col.// -->
+        <!-- </div> -->
+        <div class="col-lg-3 col-12 col-sm-12">
+          <div class="widgets-wrap d-flex justify-content-end">
+            <div class="widget-header" style="padding-right: 2rem">
+              <a href="{% url 'cart' %}" class="icontext">
+                <div class="icon"><i class="fa fa-lg fa-shopping-cart"></i></div>
+                <div class="text">
+                  <small class="text-muted">Basket</small> <br>
+                  <span class=""><strong>{{cart_count}}</strong> items</span>
+                </div>
+              </a>
+              <!-- <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
+                <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
+                <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
+              </a>  ***width: 25%; float:left; margin: 0px;** -->
+            </div> <!-- widget .// -->
+
+
+            {% if user.id is  None %}
+            <div class="widget-header">
+              <small class="title text-muted">Welcome guest!</small>
+              <div>
+                <a href="{% url 'login' %}">Sign in</a> <span class="dark-transp"> | </span>
+                <a href="{% url 'register' %}"> Register</a>
+              </div>
+            </div>
+            {% else %}
+            <div class="widget-header">
+              <small class="title text-muted">Welcome <strong>{{user.first_name |capfirst}}!</strong></small>
+              <div>
+                <a href="{% url 'dashboard' %}">Dashboard</a> <span class="dark-transp"> | </span>
+                <a href="{% url 'logout' %}"> Logout</a>
+              </div>
+            </div>
+
+            {% endif %}
+          </div>
+          <!--*widget  dropdown.// -->
+        </div> <!-- widgets-wrap.// -->
+      </div> <!-- col.// -->
+
+    </div> <!-- container.// -->
+  </section> <!-- header-main .// -->
+
+
+  <nav class="navbar navbar-expand-lg navbar-main border-bottom">
+    <div class="container">
+      <div class="col-lg col-sm col-md col-6 flex-grow-0">
+        <div class="category-wrap dropdown d-inline-block float-right">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-bars"></i> All category
+          </button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'store' %}">
+              <h6>All Products</h6>
+            </a>
+            {% for category in links %}
+            <a class="dropdown-item" href="{{ category.get_url }}">{{ category.category_name }}</a>
+            {% endfor %}
+          </div>
+
+        </div>
+      </div> <!-- category-wrap.//***** -->
+
+      <div class="" style="padding-right: 1.2rem">
+        <a href="{% url 'store' %}" class="btn btn-outline-primary">Store</a>
+      </div>
+
+    </div> <!-- container .// -->
+  </nav>
+</header> <!-- section-header.// -->

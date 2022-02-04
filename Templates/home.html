@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+	@media only screen and (min-width: 400px) and (max-device-width: 649px) {
+		.grid-container {
+			display: grid;
+			grid-template-columns: auto auto;
+			grid-gap: 5px;
+			padding: 10px;
+			align-content: space-evenly;
+		}
+
+		.grid-container>div {
+			background-color: rgba(255, 255, 255, 0.8);
+			text-align: center;
+			padding: 20px 0;
+			font-size: 17px;
+		}
+	}
+	@media screen and (min-device-width: 650px) and (max-device-width: 850px) {
+
+		/* STYLES HERE */
+		.grid-container {
+			display: grid;
+			grid-template-columns:auto auto;
+			grid-gap: 25px;
+			padding: 20px;
+			align-content: space-evenly;
+		}
+
+		.grid-container>div {
+			background-color: rgba(255, 255, 255, 0.8);
+			text-align: center;
+			padding: 20px 0;
+			font-size: 20px;
+		}
+	}
+	@media screen and (min-device-width: 851px) and (max-device-width: 950px) {
+		/* STYLES HERE */
+		.grid-container {
+			display: grid;
+			grid-template-columns: auto auto auto;
+			grid-gap: 6px;
+			padding: auto;
+			align-content: space-evenly;
+		}
+
+		.grid-container>div {
+			background-color: rgba(255, 255, 255, 0.8);
+			text-align: center;
+			padding: 20px 0;
+			font-size: 20px;
+		}
+	}
+</style>
+
+<!-- ========================= SECTION MAIN ========================= -->
+<section class="section-intro padding-y-sm">
+	<div class="container">
+
+		<div class="intro-banner-wrap">
+			<img src="{% static 'images/banners/2.1.png' %}" class="img-fluid rounded">
+		</div>
+
+	</div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION MAIN END// ========================= -->
+
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name padding-y-sm">
+	<div class="container">
+
+		<header class="section-heading">
+			<a href="{% url 'store' %}" class="btn btn-outline-primary float-right">See all</a>
+			<h3 class="section-title">Popular products</h3>
+		</header><!-- sect-heading -->
+
+
+		<div class="row grid-container">
+			{% for product in products %}
+			<div class="col-md-3">
+				<div class="card card-product-grid">
+					<a href="{{ product.get_url }}" class="img-wrap"> <img src="{{ product.images.url }}"> </a>
+					<figcaption class="info-wrap">
+						<a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
+						<div class="price mt-1">&#8377;{{ product.price }} <del><small>&#8377;{{product.mrp}}</small></del></div> <!-- price-wrap.// -->
+						<div class="rating-star">
+							<span>
+								<i class="fa fa-star{% if .averageReview < 0.5 %}-o{% elif product.averageReview >= 0.5 and product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>
+								<i class="fa fa-star{% if product.averageReview < 1.5 %}-o{% elif product.averageReview >= 1.5 and product.averageReview < 2 %}-half-o {% endif %}" aria-hidden="true"></i>
+								<i class="fa fa-star{% if product.averageReview < 2.5 %}-o{% elif product.averageReview >= 2.5 and product.averageReview < 3 %}-half-o {% endif %}" aria-hidden="true"></i>
+								<i class="fa fa-star{% if product.averageReview < 3.5 %}-o{% elif product.averageReview >= 3.5 and product.averageReview < 4 %}-half-o {% endif %}" aria-hidden="true"></i>
+								<i class="fa fa-star{% if product.averageReview < 4.5 %}-o{% elif product.averageReview >= 4.5 and product.averageReview < 5 %}-half-o {% endif %}" aria-hidden="true"></i>
+							</span>
+						</div>
+
+
+					</figcaption>
+				</div>
+			</div> <!-- col.// -->
+			{% endfor %}
+		</div><!-- container // -->
+</section>
+<!-- ========================= SECTION  END// ========================= -->
+
+
+
+
+
+</body>
+
+</html>
+
+
+{% endblock %}

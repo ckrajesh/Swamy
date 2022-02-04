@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<section class="section-content padding-y bg">
+  <div class="container">
+
+    <!-- ============================ COMPONENT 1 ================================= -->
+    <h4 class="text-center mb-20">Review Your Order and Make Payment</h4>
+    <div class="row">
+
+      <aside class="col-lg-8">
+        <div class="card">
+          <h5 class="card-header">Billing Address</h5>
+          <div class="card-body">
+            <p class="card-text mb-0">{{order.full_name}}</p>
+            <p class="card-text mb-0">{{order.full_address}}</p>
+            <p class="card-text mb-0">{{order.city}}, {{order.state}}, {{order.pincode}}</p>
+            <p class="card-text mb-0">{{order.country}}</p>
+            <p class="card-text mb-0">{{order.email}}</p>
+            <p class="card-text mb-0">{{order.phone}}</p>
+            {% if order.order_note %}
+            <b>Order Note: </b> {{order.order_note}}
+            {% endif %}
+
+
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Payment Method</h5>
+          <div class="card-body">
+            <b><p class="card-text">Via Razorpay</p></b>
+            <p class="card-text"><b>All Payments Available Methods :</b>
+
+             <ul> UBI Transaction</ul>
+             <ul>Net Banking</ul>
+             <ul>Googlepay</ul>
+             <ul>Phonepe</ul>
+             <ul>Paytm</ul>
+             <ul>Credit Card</ul>
+
+            <b><u>All are 100% safe and Secure</u></b>
+            </p>
+            
+          </div>
+        </div>
+        <div class="card">
+          <h5 class="card-header">Review Products</h5>
+          <div class="card-body">
+            <table class="table table-borderless table-shopping-cart">
+              <thead class="text-muted">
+                <tr class="small text-uppercase">
+                  <th scope="col">Product</th>
+                  <th scope="col" width="120">Quantity</th>
+                  <th scope="col" width="120">Price</th>
+
+                </tr>
+              </thead>
+              <tbody>
+
+                {% for cart_item in cart_items %}
+                <tr>
+                  <td>
+                    <figure class="itemside align-items-center">
+                      <div class="aside"><img src="{{ cart_item.product.images.url }}" class="img-sm"></div>
+                      <figcaption class="info">
+                        <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
+                        <p class="text-muted small">
+                          {% if cart_item.variations.all %}
+                          {% for item in cart_item.variations.all %}
+                          {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }} <br>
+                          {% endfor %}
+                          {% endif %}
+                        </p>
+                      </figcaption>
+                    </figure>
+                  </td>
+                  <td>
+                    <!-- col.// -->
+                    <label for="">{{cart_item.quantity}}</label>
+                  </td>
+                  <td>
+                    <div class="price-wrap">
+                      <var class="price">&#8377;{{ cart_item.sub_total }}</var>
+                      <small class="text-muted"> &#8377;{{ cart_item.product.price }} each </small>
+                    </div> <!-- price-wrap .// -->
+                  </td>
+
+                </tr>
+                {% endfor %}
+
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+
+      </aside> <!-- col.// -->
+      <aside class="col-lg-4">
+
+        <div class="card">
+          <div class="card-body">
+            <dl class="dlist-align">
+              <dt>Total price:</dt>
+              <dd class="text-right">&#8377;{{total}}</dd>
+            </dl>
+            <dl class="dlist-align">
+              <dt>Delivery Charge:</dt>
+              <dd class="text-right"> &#8377;{{Delivery_Charge}}</dd>
+            </dl>
+            <dl class="dlist-align">
+              <dt>Grand Total:</dt>
+              <dd class="text-right text-dark b"><strong>&#8377;{{grand_total}}</strong></dd>
+            </dl>
+            <hr>
+            <p class="text-center mb-3">
+              <img src="{% static './images/misc/payments.png' %}" height="26">
+            </p>
+
+            <div class="">
+              <style media="screen">
+                #rzp-button1 {}
+              </style>
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+              <button class="btn btn-outline-success btn-block" type="submit" id="rzp-button1">Pay Now!</button>
+
+              <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+              <script>
+
+                function getCookie(name) {
+                  let cookieValue = null;
+                  if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                      const cookie = cookies[i].trim();
+                      // Does this cookie string begin with the name we want?
+                      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                      }
+                    }
+                  }
+                  return cookieValue;
+                }
+
+
+                // var csrftoken = getCookie('csrftoken');
+                var redirect_url = "{% url 'order_complete' %}"
+                var amount = "{{ grand_total }}"
+                var url = "{% url 'payments' %}"
+                var csrftoken = getCookie('csrftoken');
+                var orderID = "{{order.order_number}}"
+                var payment_capture = "{{payment_capture}}"
+
+
+                var options = {
+                  "key": "{{api_key}}", // Enter the Key ID generated from the Dashboard
+                  "amount": "{{grand_total}}" * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                  "currency": "INR",
+                  "name": "Swamy",
+                  "description": "{{cart_item.product.product_name}}",
+                  "image": "{% static './images/newswamykb.png' %}",
+                  "order_id": '{{order_id}}', //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                  "handler": function(response) {
+                   alert('Your Payment is Processing Please Wait')
+                    sendData();
+                    function sendData() {
+                      fetch(url, {
+                          method: "POST",
+                          headers: {
+                            "Content-type": "application/json",
+                            "X-CSRFToken": csrftoken,
+                          },
+                          body: JSON.stringify({
+                            Full_name:"{{order.full_name}}",
+                            Phone_number:"{{order.phone}}",
+                            orderID: orderID,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: "{{order_id}}", //details.id
+                            payment_method: "via Razorpay",
+                          }),
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                          window.location.href = redirect_url + '?order_number='+orderID+'&razorpay_payment_id='+response.razorpay_payment_id;
+                        });
+                    }
+
+                  },
+                  "prefill": {
+                    "name": "{{order.full_name}}",
+                    "email": "{{order.email}}",
+                    "contact": "{{order.phone}}"
+                  },
+                  "notes": {
+                    "address": "{{order.full_address}}"
+                  },
+                  "theme": {
+                    "color": "#00008B"
+                  }
+                };
+
+                var rzp1 = new Razorpay(options);
+                rzp1.on('payment.failed', function(response) {
+                  alert('Payment Processing has failed Please try again ');
+                  alert(response.error.description);
+                });
+                document.getElementById('rzp-button1').onclick = function(e) {
+                  rzp1.open();
+                  e.preventDefault();
+                }
+              </script>
+
+            </div>
+
+
+          </div> <!-- card-body.// -->
+        </div> <!-- card.// -->
+
+      </aside> <!-- col.// -->
+
+
+    </div> <!-- row.// -->
+
+    <!-- ============================ COMPONENT 1 END .// ================================= -->
+
+  </div> <!-- container .//  -->
+</section>
+
+
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% autoescape off %}
+
+
+Hi {{user.first_name}},
+
+Thanks For Trusting Us and Welcome to our family
+
+Conforming ,
+Your order has been placed Successfully.
+
+Order Number : {{order.order_number}}
+
+Grand Total : ₹ {{order.order_total}}
+
+created at : {{order.created_at}}
+
+Your Order is on the Way to Your Home
+
+{% endautoescape %}
